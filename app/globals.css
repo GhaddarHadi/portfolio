@@ -47,6 +47,20 @@
   --font-mono: var(--font-spline-mono), ui-monospace, monospace;
 }
 
+/* Overall scale. Tailwind sizes type AND spacing in rem, so nudging the root
+   size zooms the whole page proportionally rather than just enlarging text.
+   Expressed as a percentage, not px, so a visitor's own browser font-size
+   preference still multiplies through instead of being overridden.
+   Left at 100% on small screens, where there is no room to spend. */
+html {
+  font-size: 100%;
+}
+@media (min-width: 640px) {
+  html {
+    font-size: 106.25%; /* 17px against a 16px default */
+  }
+}
+
 body {
   background: var(--bond);
   color: var(--ink);
