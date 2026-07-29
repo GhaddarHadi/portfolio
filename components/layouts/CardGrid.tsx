@@ -57,7 +57,7 @@ export function CardGrid({ section, entries }: LayoutProps) {
         </div>
       ) : null}
 
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {shown.map((entry, i) => {
           const name = titleDef ? String(entry.data[titleDef.key] ?? '') : ''
           const tagline = taglineDef ? String(entry.data[taglineDef.key] ?? '') : ''

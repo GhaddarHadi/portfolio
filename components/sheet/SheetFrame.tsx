@@ -1,21 +1,12 @@
-import { CornerTicks } from './CornerTicks'
-
 /**
- * The sheet: a bordered frame with registration ticks at the corners.
+ * Page shell.
  *
- * No footer and no title block — both were cut in review as invented metadata.
- * Contact details and links live in the hero, at the top of the page where a
- * recruiter reads them first.
+ * This used to be a bordered "drawing sheet" — a boxed column centred on the
+ * page. In review it read as a document floating on a background rather than a
+ * website, so the border, corner ticks and narrow cap are gone. Sections now
+ * run the full width of the viewport; individual content still caps itself
+ * where long lines would hurt readability.
  */
 export function SheetFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-bond text-ink">
-      <div className="mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8">
-        <div className="relative border border-ink/50">
-          <CornerTicks />
-          <div className="px-4 py-8 sm:px-10 sm:py-12">{children}</div>
-        </div>
-      </div>
-    </div>
-  )
+  return <div className="min-h-screen bg-bond text-ink">{children}</div>
 }

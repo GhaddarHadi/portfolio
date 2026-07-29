@@ -71,7 +71,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
   const range = dateRange(entry.start_date, entry.end_date)
 
   return (
-    <article className="mx-auto max-w-3xl">
+    <article className="mx-auto max-w-3xl px-5 py-14 sm:px-10">
       <Link
         href="/#projects"
         className="lettering text-[10px] text-slate hover:text-redline"

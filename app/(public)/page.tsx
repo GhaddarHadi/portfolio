@@ -72,10 +72,9 @@ export default async function Home() {
       <CommandPalette items={commands} />
 
       {/* ── Hero ─────────────────────────────────────────────────────────────
-          A dark panel that bleeds to the sheet's edges — the one loud moment on
-          an otherwise quiet bond-paper page. Negative margins cancel the sheet's
-          padding so the contour field reaches the border. */}
-      <section className="on-dark relative -mx-4 -mt-8 overflow-hidden bg-[#0f1319] px-4 py-12 sm:-mx-10 sm:-mt-12 sm:px-10 sm:py-16">
+          Full-bleed dark band across the whole viewport — the one loud moment
+          on an otherwise quiet page. */}
+      <section className="on-dark relative w-full overflow-hidden bg-[#0f1319] px-5 py-16 sm:px-10 sm:py-24 lg:px-16">
         {/* contour field — fills the panel, never intercepts clicks */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <ContourField className="h-full w-full" />
@@ -87,7 +86,7 @@ export default async function Home() {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,19,25,0.82)_0%,rgba(15,19,25,0.5)_55%,transparent_100%)]"
         />
 
-        <div className="relative grid items-center gap-10 lg:grid-cols-[1.35fr_1fr]">
+        <div className="relative mx-auto grid max-w-[1600px] items-center gap-12 lg:grid-cols-[1.35fr_1fr]">
 
         <div>
           <h1 className="font-display text-5xl font-black uppercase leading-[0.92] tracking-tight sm:text-7xl">
@@ -150,7 +149,7 @@ export default async function Home() {
       </section>
 
       {/* ── Sections ─────────────────────────────────────────── */}
-      <div className="mt-20 space-y-16">
+      <div className="mx-auto max-w-[1600px] space-y-20 px-5 py-20 sm:px-10 lg:px-16">
         {sections.map(({ section, entries }, i) => {
           if (entries.length === 0) return null
           const Layout = getLayout(section.layout)

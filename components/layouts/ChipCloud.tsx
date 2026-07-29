@@ -43,7 +43,7 @@ export function ChipCloud({ section, entries }: LayoutProps) {
   const issuerDef = section.field_schema.find((f) => f.type === 'text' && f.key !== titleDef?.key)
 
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {entries.map((entry) => {
         const name = titleDef ? String(entry.data[titleDef.key] ?? '') : ''
         const issuer = issuerDef ? String(entry.data[issuerDef.key] ?? '') : ''
