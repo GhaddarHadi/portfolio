@@ -24,9 +24,11 @@ export default async function Home() {
   const { profile, sections } = await getSiteModel()
   const variants = await getVariants()
 
-  const emailParts =
+  // Reverse it here, on the server. The reversed string is the only form that
+  // reaches the HTML — see ObfuscatedEmail for why the parts must not be props.
+  const emailReversed =
     profile?.email_public && profile.email_public.includes('@')
-      ? profile.email_public.split('@')
+      ? [...profile.email_public].reverse().join('')
       : null
 
   // jobTitle for structured data, derived from the experience section (no hardcoding).
@@ -102,7 +104,7 @@ export default async function Home() {
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink/80">{profile.headline}</p>
           ) : null}
 
-          <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="mt-7 flex flex-wrap items-center gap-2.5">
             {/* only render links that actually go somewhere — a dead "#" link
                 on a page a recruiter is reading is worse than no link */}
             {profile?.socials
@@ -113,16 +115,17 @@ export default async function Home() {
                   href={s.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="lettering text-xs text-ink underline decoration-redline decoration-2 underline-offset-4 hover:text-redline"
+                  className="lettering rounded-[2px] border border-ink/35 px-3 py-2 text-[11px] text-ink transition-colors hover:border-redline hover:text-redline"
                 >
                   {s.label}
                 </a>
               ))}
-            {emailParts ? (
+            {emailReversed ? (
               <ObfuscatedEmail
-                user={emailParts[0]}
-                domain={emailParts[1]}
-                className="lettering text-xs text-ink underline decoration-redline decoration-2 underline-offset-4 hover:text-redline"
+                reversed={emailReversed}
+                // normal-case: an address in all caps with wide tracking is
+                // harder to read than the address itself
+                className="rounded-[2px] border border-ink/35 px-3 py-2 font-mono text-[11px] normal-case tracking-normal text-ink transition-colors hover:border-redline hover:text-redline"
               />
             ) : null}
           </div>
