@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# keep the documented example (contains no real values)
+!.env.local.example
+
+# local dev artifacts
+dev.log
+*.local.html

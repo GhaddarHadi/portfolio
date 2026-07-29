@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
+/* =============================================================================
+   Drawing-set design tokens.
+   Palette sourced from the APWA utility color code + drafting media:
+   bond paper, graphite, non-photo blue, redline markup, utility amber, slate.
+   ========================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bond: #f6f7f5; /* drafting bond paper (cool, not cream) */
+  --ink: #1c2024; /* graphite */
+  --blue: #8fb4d4; /* non-photo blue: grid + construction lines */
+  --redline: #d93a2b; /* the one bold accent: revisions / active / CTA */
+  --amber: #e0a32e; /* secondary data accent */
+  --slate: #5b6572; /* muted labels / annotation */
+  --line: #cbd0cb; /* hairline rule */
+  --grid: rgba(143, 180, 212, 0.16);
+  --panel: rgba(255, 255, 255, 0.55);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark = a backlit light-table: deep slate bond, blue lines glowing faintly. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bond: #11151b;
+    --ink: #e6e9ec;
+    --blue: #6e9bc5;
+    --redline: #f0503c;
+    --amber: #e7b34e;
+    --slate: #8a94a2;
+    --line: #2a313a;
+    --grid: rgba(110, 155, 197, 0.1);
+    --panel: rgba(20, 26, 33, 0.5);
   }
 }
 
+@theme inline {
+  --color-bond: var(--bond);
+  --color-ink: var(--ink);
+  --color-blue: var(--blue);
+  --color-redline: var(--redline);
+  --color-amber: var(--amber);
+  --color-slate: var(--slate);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
+
+  --font-display: var(--font-chivo), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-spline-mono), ui-monospace, monospace;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bond);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Content sitting on the dark hero field. Rather than restyling each child,
+   redefine the theme variables here — every `text-ink`, `text-slate`,
+   `border-line` etc. inside flips automatically, in both light and dark mode. */
+.on-dark {
+  --bond: #0f1319;
+  --ink: #eef1f4;
+  --slate: #97a2b0;
+  --line: #2b333d;
+  --panel: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+/* Drafting-lettering: mono, uppercase, spaced — the connective annotation voice. */
+.lettering {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+/* Real, visible keyboard focus — redline, like a correction mark. */
+:focus-visible {
+  outline: 2px solid var(--redline);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--amber) 35%, transparent);
+}
+
+/* Print: the resume variants are meant to become a PDF via the browser's own
+   "Save as PDF". Force light ink-on-paper regardless of the screen theme. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  :root {
+    --bond: #ffffff;
+    --ink: #14181c;
+    --slate: #4a5561;
+    --redline: #b8321f;
+    --line: #c9cec9;
+    --panel: transparent;
+  }
+  body {
+    background: #fff;
+  }
+  a[href]::after {
+    content: '';
+  }
+}
+
+/* Respect reduced motion fully. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
