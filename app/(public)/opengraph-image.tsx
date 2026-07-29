@@ -4,6 +4,10 @@ import { getProfile } from '@/lib/content'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const alt = 'Hadi Ghaddar — portfolio'
+// Generated once at build time rather than per request. Required for the static
+// export, and the right behaviour anyway — the card only changes when the
+// profile does, which already triggers a rebuild.
+export const dynamic = 'force-static'
 
 const BOND = '#f6f7f5'
 const INK = '#1c2024'

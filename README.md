@@ -76,21 +76,63 @@ in `AGENTS.md`.
 | `npm run import-icons` | Generates brand-coloured logos from simple-icons |
 | `npm run import-certs` | Loads certifications and issuer logos |
 
-## Deploying
+## Hosting: static site + local dashboard
 
-The app deploys to Vercel with no configuration. Set these environment
-variables in the Vercel project (Settings → Environment Variables):
+The **public site is deployed to GitHub Pages** as static files, and the
+**`/admin` dashboard runs locally**. GitHub Pages serves files rather than
+running a server, so the parts that need a request at runtime — session checks,
+server actions, the auth callback, on-demand revalidation — cannot live there.
 
-| Variable | Notes |
-|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable key — safe in the browser, protected by RLS |
-| `SUPABASE_SERVICE_ROLE_KEY` | **Secret.** Server-side only |
-| `NEXT_PUBLIC_SITE_URL` | The deployed URL, e.g. `https://your-site.vercel.app` |
+The content is therefore baked in **at build time**, which shapes the workflow:
 
-A GitHub Action (`.github/workflows/heartbeat.yml`) writes to the database every
-three days so the free Supabase tier never pauses. It needs two repository
-secrets: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
+```
+edit content in the local dashboard   ->   npm run dev, go to /admin
+publish it to the live site           ->   Actions -> "Deploy to GitHub Pages"
+                                            -> Run workflow
+```
+
+`scripts/build-pages.mjs` moves the server-only paths aside, runs
+`next build` with `output: 'export'`, then restores them — wrapped in
+try/finally so an interrupted build never leaves the admin missing. It also
+writes `out/.nojekyll`, without which Pages' Jekyll step silently discards the
+entire `_next` asset folder.
+
+If no resume variants are readable (their Supabase policy is optional), the
+script drops `/r/[slug]` from the build rather than failing: a dynamic route
+that generates zero pages is a hard error under static export. Apply the policy
+and the resume pages reappear on the next build.
+
+```bash
+npm run build:pages   # produces out/
+npx serve out         # preview exactly what Pages will serve
+```
+
+### Repository settings the deploy needs
+
+Settings → Pages → Source: **GitHub Actions**.
+Pages requires a **public** repository on free GitHub accounts.
+
+Settings → Secrets and variables → Actions:
+
+| Kind | Name | Value |
+|---|---|---|
+| Secret | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| Secret | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable key — protected by RLS |
+| Variable | `SITE_URL` | The live URL |
+| Variable | `BASE_PATH` | Empty for a `…github.io` user site; `/portfolio` for a project repo |
+
+The static build only ever reads public data, so the **service-role key is not
+needed here** and is deliberately absent from the workflow.
+
+The heartbeat Action (`.github/workflows/heartbeat.yml`) keeps the free Supabase
+tier from pausing and does need `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+as secrets.
+
+### Deploying with a server instead
+
+Nothing prevents deploying the full app (admin included) to a host that runs
+Node — Vercel imports this repo with no configuration. That restores
+browser-based editing and on-demand revalidation.
 
 ## Accessibility & performance
 

@@ -11,6 +11,9 @@ import { PrintButton } from '@/components/site/PrintButton'
 import { dateRange } from '@/lib/format'
 
 export const revalidate = false
+// Only the variants that exist at build time are routes; anything else 404s.
+// Required by the static export, which cannot resolve unknown params at runtime.
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   const variants = await getVariants()

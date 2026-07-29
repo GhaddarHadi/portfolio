@@ -15,6 +15,8 @@ import { pickTitle } from '@/components/layouts/entry-view'
 import { dateRange } from '@/lib/format'
 
 export const revalidate = false
+// Only the projects that exist at build time are routes; anything else 404s.
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   const slugs = await getAllEntrySlugs()

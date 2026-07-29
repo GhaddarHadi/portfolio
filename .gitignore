@@ -46,3 +46,7 @@ next-env.d.ts
 # local dev artifacts
 dev.log
 *.local.html
+
+# transient during the Pages build
+.pages-stash/
+/out/

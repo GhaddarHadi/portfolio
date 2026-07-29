@@ -13,7 +13,8 @@
     "loginlink": "tsx scripts/loginlink.ts",
     "import-assets": "tsx scripts/import-assets.ts",
     "import-icons": "tsx scripts/import-icons.ts",
-    "import-certs": "tsx scripts/import-certs.ts"
+    "import-certs": "tsx scripts/import-certs.ts",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

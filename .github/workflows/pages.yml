@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+# The site is statically exported, so the content is baked in at BUILD time.
+# After editing anything in the local /admin dashboard, run this workflow to
+# publish the change: Actions -> Deploy to GitHub Pages -> Run workflow.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # manual "publish my content edits" button
+  schedule:
+    # rebuild weekly so edits made in the dashboard go live even if forgotten
+    - cron: '23 7 * * 1'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# never let two deploys race; let a newer one supersede a queued one
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build static site
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          # empty for a user site (…github.io), "/portfolio" for a project repo
+          BASE_PATH: ${{ vars.BASE_PATH }}
+        run: npm run build:pages
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
